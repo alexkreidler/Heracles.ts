@@ -84,7 +84,10 @@ export default class HydraClient implements IHydraClient {
   /** @inheritDoc */
   public async getApiDocumentation(urlOrResource: string | IResource): Promise<IApiDocumentation> {
     const url = HydraClient.getUrl(urlOrResource);
+
     const apiDocumentation = await this.getApiDocumentationUrl(url);
+    // TODO: think about caching this??, maybe httpCall does this automatically
+
     const options = { auxiliaryResponse: apiDocumentation.response, auxiliaryOriginalUrl: url };
     const resource = await this.getResourceFrom(apiDocumentation.url, options);
     const result = resource.ofType(hydra.ApiDocumentation).first() as IApiDocumentation;
@@ -131,6 +134,11 @@ export default class HydraClient implements IHydraClient {
     return await hypermediaProcessor.process(response, this, options);
   }
 
+  /**
+   * Requests the provided URL, returns the response and the parsed ApiDocumentation Link header
+   * @param  {string} url
+   * @returns Object containing ApiDocumentation URL and response of provided URL
+   */
   private async getApiDocumentationUrl(url: string): Promise<{ url: string; response: any }> {
     const response = await this.makeRequestTo(url);
     if (response.status !== 200) {

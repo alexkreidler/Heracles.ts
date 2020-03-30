@@ -19,7 +19,7 @@ export interface IHydraClient {
   /**
    * Obtains an API documentation.
    * @param {string | IResource} urlOrResource URL or object with an iri property from which to obtain an API
-   *                                           documentation.
+   *                                           documentation. Requested URL must serve the ApiDocumentation Link header.
    * @returns {ApiDocumentation}
    */
   getApiDocumentation(urlOrResource: string | IResource): Promise<IApiDocumentation>;
